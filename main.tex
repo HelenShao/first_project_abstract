@@ -10,8 +10,8 @@
 \usepackage{hyperref}
 
 % Page setup
-\usepackage[margin=1in]{geometry}
-\linespread{1.5}
+\usepackage[top=0.5in, bottom=0.75in, left=0.75in, right=0.75in]{geometry}
+\linespread{1.0}
 
 % Document information
 \title{First Year Project Proposal}
@@ -24,29 +24,30 @@
 
 \section{Project Abstract}
 
-I am working with Daniel Eisenstein and the Abacus N-body simulation team to build the next generation of mock catalogs that will complement data from DESI, Euclid, Rubin/LSST, and Simons Observatory. The goals of the AbacusAurora simulations include studying the growth of structure through redshift-space distortions (RSD), weak lensing analysis, galaxy population statistics, and cross-correlations with CMB datasets such as Sunyaev-Zel'dovich maps. To achieve these objectives, the simulation requires (a) large volumes of 8~\textit{h}$^{-1}$~Gpc boxes that can contain light cones up to $z=2$, and (b) a novel galaxy assignment method via Massless Aggregating Particles (MAPs) that enables on-the-fly construction of merger trees. The former poses computational challenges due to the need for large-scale parallelization and efficient memory usage, which is central to the first part of my project. The latter is crucial for more realistic modeling of assembly bias and clustering as a function of galaxy properties. This is key for the second part of my proposal, which will focus on developing new density split statistics for the DESI Bright Galaxy Survey (BGS) sample to improve RSD measurements with a currently underutilized dataset through multitracer analysis.
+I am working with Daniel Eisenstein and the Abacus N-body simulation team to build next-generation mock catalogs for DESI, Euclid, Rubin/LSST, and Simons Observatory. The AbacusAurora simulations will study growth of structure through RSD and weak lensing, galaxy population statistics, and cross-correlations with CMB datasets. To achieve these objectives, the simulations require (a) large volumes of 8~\textit{h}$^{-1}$~Gpc boxes that can contain light cones up to $z=2$, and (b) a novel galaxy assignment method via Massless Aggregating Particles (MAPs) that enables on-the-fly construction of merger trees. The former poses computational challenges due to the need for large-scale parallelization and efficient memory usage, which is central to the \textit{first part} of my project. The latter is crucial for more realistic modeling of assembly bias and galaxy clustering. This is key for the \textit{second part} of my proposal, which will focus on developing new density split statistics for the DESI Bright Galaxy Survey (BGS) sample~\citep{bgs_target_selection} to improve RSD measurements with multitracer analysis. First, to accomodate the enormous simulation volumes, I am implementing MPI parallelization to generate the kinematic initial conditions for over 35 trillion particles. The basis for this is the Zeldovich Approximation, which uses the primordial density power spectrum to compute the initial particle displacements and velocities. This past semester, I have been building this code infrastructure and testing it on the Aurora cluster. I now have a clear pipeline for the matrix generation, grid decomposition, and inter-node communication. The goal is to complete this work by the end of January 2026 to align with the AbacusAurora timeline. Second, I will make use of MAP-defined galaxy populations to design density split statistics for the currently underutilized BGS sample to improve RSD measurements. The dense BGS samples are ideal for multitracer analyses because they minimize shot noise~\citep{mcdonald2009}. However, color-based splits do not provide large enough bias differences for effective multitracer cosmic variance cancellation. To address this limitation, I will develop a density split method that tags each BGS galaxy by its local environment---specifically, counting faint photometric neighbors around each galaxy within $\sim$1~Mpc scales. This environment tagging creates density-based subsamples with larger bias separation than color splits alone. The MAP method is well-suited for this because MAP properties such as local DM density, velocity dispersion, formation history naturally encode environmental information in mock catalogs. 
 
 %My first-year project focuses on two main contributions to this effort. 
-First, to accomodate the enormous simulation volumes, I am implementing MPI parallelization to generate the kinematic initial conditions for over 35 trillion particles. The basis for this is the Zeldovich Approximation (ZA), which uses the primordial density power spectrum to compute the initial particle displacements and velocities needed to track the formation of cosmic web structures. Solving the Poisson equation for the AbacusAurora simulations requires performing Fourier transforms of $32768^3$ Hermitian matrices distributed across multiple compute nodes. This past semester, I have been building this code infrastructure and currently testing it on the Aurora cluster. I now have a clear pipeline for matrix generation, grid decomposition, and inter-node communication that can accommodate the memory constraints. The goal is to complete this work by the end of January 2026 to align with the AbacusAurora timeline. Short term next steps include scaling tests, testing edge cases of node and cell grid dimensions, and ensuring accurate reproduction of previous versions of the code---specifically verifying that simulations run at different resolutions match up to their common Fourier modes. Second, I will make use of MAP-defined galaxy populations to design density split statistics for the BGS sample. The DESI BGS contains over 10 million galaxies ($z < 0.6$), but currently only $\sim$13\% of the sample is utilized in clustering analyses due to modeling challenges with denser samples. While simple color-based splits (red vs. blue galaxies) can create different galaxy populations, they do not provide large enough bias differences for effective multitracer cosmic variance cancellation. To address this limitation, I will develop a density split methodology that tags each BGS galaxy by its local environment---specifically, counting faint photometric neighbors (from deep imaging surveys like LSST and Euclid, $<26$ mag) around each BGS spectroscopic galaxy within $\sim$1~Mpc scales. Galaxies with many neighbors are tagged as residing in high-density environments (clusters, groups), while those with few neighbors are tagged as low-density (field). This environment tagging creates density-based subsamples with larger bias separation than color splits alone. The MAP method is well-suited for this because MAP properties such as local DM density, velocity dispersion, formation history naturally encode environmental information, enabling accurate environment tagging in mock catalogs. By cross-correlating these density-split samples, we can achieve improved multitracer analysis through better cosmic variance cancellation on large scales, while the abundant photometric neighbor counts also reduce shot noise at small scales, enabling precision RSD measurements across all scales. This work will maximize the scientific value of the dense BGS dataset and demonstrate new statistical techniques applicable to next-generation surveys.
+% First, to accomodate the enormous simulation volumes, I am implementing MPI parallelization to generate the kinematic initial conditions for over 35 trillion particles. The basis for this is the Zeldovich Approximation (ZA), which uses the primordial density power spectrum to compute the initial particle displacements and velocities needed to track the formation of cosmic web structures. Solving the Poisson equation for the AbacusAurora simulations requires performing Fourier transforms of $32768^3$ Hermitian matrices distributed across multiple compute nodes. This past semester, I have been building this code infrastructure and currently testing it on the Aurora cluster. I now have a clear pipeline for matrix generation, grid decomposition, and inter-node communication that can accommodate the memory constraints. The goal is to complete this work by the end of January 2026 to align with the AbacusAurora timeline. Short term next steps include scaling tests, testing edge cases of node and cell grid dimensions, and ensuring accurate reproduction of previous versions of the code---specifically verifying that simulations run at different resolutions match up to their common Fourier modes. Second, I will make use of MAP-defined galaxy populations to design density split statistics for the BGS sample to improve RSD measurements and study growth of structure. The DESI BGS contains over 10 million galaxies ($z < 0.6$), but currently only $\sim$13\% of the sample is utilized in clustering analyses due to modeling challenges with denser samples. However, dense galaxy samples are ideal for multitracer analyses because they minimize shot noise. While simple color-based splits (red vs.\ blue galaxies) can create different galaxy populations with different biases, they do not provide large enough bias differences for effective multitracer cosmic variance cancellation. To address this limitation, I will develop a density split methodology that tags each BGS galaxy by its local environment---specifically, counting faint photometric neighbors (from deep imaging surveys like LSST and Euclid, $<26$ mag) around each BGS spectroscopic galaxy within $\sim$1~Mpc scales. Galaxies with many neighbors are tagged as residing in high-density environments (clusters, groups), while those with few neighbors are tagged as low-density (field). This environment tagging creates density-based subsamples with larger bias separation than color splits alone. The MAP method is well-suited for this because MAP properties such as local DM density, velocity dispersion, formation history naturally encode environmental information in mock catalogs. 
+% By cross-correlating these density-split samples, we can achieve improved multitracer analysis on large scales, while the abundant photometric neighbor counts also reduce shot noise at small scales, enabling precision RSD measurements. This work will maximize the scientific value of the dense BGS dataset and demonstrate new statistical techniques fruitful for next-generation surveys.
 
 \section{Advising Committee Suggestions}
 In addition to my main advisor, Daniel Eisenstein, here are suggestions for my advising committee:
-\begin{enumerate}
+\begin{itemize}
     \item Lars Hernquist
     \item Cora Dvorkin (physics department)
     \item John Kovac
     \item Charlie Conroy
     \item Doug Finkbeiner
-\end{enumerate}
+\end{itemize}
 
 \section{Parallel Research Projects}
 \begin{itemize}
-    \item John Kovac
-    \item Blake Sherwin
+    \item I am very interested in pursuring a parallel project with John Kovac on the problem of missing modes in CMB E/B decomposition. The idea is to remove lensing effects before computing the purification matrix so that E/B separation happens on the source plane (unlensed) rather than the observed plane (lensed). We have discussed this approach in detail over several meetings. I am currently familiarizing myself with the LensPyx package and will begin implementing initial tests using BICEP2/Keck maps.
+    \item I am also finishing up a project with my Master's advisors (Blake Sherwin, Fiona McCarthy, and Miles Cranmer) on CMB B-mode polarization reconstruction with inter-scale Galactic dust correlations. I am at the stage of drafting the paper and preparing for submission.
 \end{itemize}
 
-\appendix
-\section{Why Multitracer Is Especially Useful for RSD Measurements}
+% \appendix
+% \section{Multitracer Statistics for RSD Measurements}
 
 % \subsection{The core problem: RSD needs large scales}
 
@@ -85,6 +86,169 @@ In addition to my main advisor, Daniel Eisenstein, here are suggestions for my a
 % Equivalent volume: Can reach precision equivalent to volumes 4--25$\times$ larger.
 
 % Multitracer removes the cosmic variance limit (McDonald \& Seljak 2009: ``How to Evade the Sample Variance Limit on Measurements of Redshift-Space Distortions''), which is the main limitation for single-tracer RSD. This is why it's especially valuable for RSD compared to measurements where shot noise is already the dominant error.
+
+% \subsection{Why Dense Galaxy Samples Are Needed for RSD Measurements}
+
+% While multitracer cancels cosmic variance, the precision of the RSD measurement is ultimately limited by \textbf{shot noise}, which depends on the number density of galaxies:
+
+% \textbf{1. Shot noise requirement for multitracer:}
+% \begin{itemize}
+%     \item The multitracer method requires $\bar{n} P_g \gg 1$, where $\bar{n}$ is the number density of galaxies and $P_g(k)$ is the galaxy power spectrum amplitude
+%     \item Most BAO surveys aim for $\bar{n} P_g \sim 1$ because they only need to measure the \textbf{shape} of the power spectrum (to find BAO features), not its amplitude
+%     \item For multitracer RSD, precision is controlled by shot noise (number density), not cosmic variance
+%     \item Higher density $\to$ lower shot noise $\to$ better precision on growth rate $f(z)$
+% \end{itemize}
+
+% \textbf{2. Enables splitting into subsamples:}
+% \begin{itemize}
+%     \item Dense samples allow you to split galaxies into multiple subsamples (e.g., high-density vs.\ low-density, red vs.\ blue) for multitracer analysis
+%     \item Each subsample must have sufficient number density to avoid shot noise becoming the limiting factor
+%     \item BGS's high density ($>10$ million galaxies) enables splitting while maintaining $\bar{n} P_g \gg 1$ in each subsample
+% \end{itemize}
+
+% \textbf{3. Push to smaller scales:}
+% \begin{itemize}
+%     \item More galaxies means lower shot noise at all scales
+%     \item Enables RSD measurements on smaller scales where shot noise would otherwise dominate
+%     \item Dense samples can extract cosmological information across a wider range of scales
+% \end{itemize}
+
+% \textbf{The key insight (McDonald \& Seljak 2009):} ``The precision with which we can determine $\beta$ [the RSD parameter] is controlled by the (shot) noise, i.e.\ density of tracers, rather than the sampling variance.'' This is why dense samples like BGS are crucial for multitracer RSD measurements---they provide the low shot noise needed to realize the full benefits of cosmic variance cancellation.
+
+% \subsection{Clarification: Tagging Scales vs.\ Measurement Scales}
+
+% An important distinction: The density split method uses \textbf{two different scales} for different purposes:
+
+% \textbf{1. Small scales ($\sim$1~Mpc) for density tagging (non-linear regime):}
+% \begin{itemize}
+%     \item Used to \textbf{classify/tag} galaxies by their local environment
+%     \item Count faint photometric neighbors within $\sim$1~Mpc to label each galaxy as high-density (clusters) vs.\ low-density (field)
+%     \item This classification happens in the non-linear regime
+%     \item \textbf{Purpose:} Create two populations with different biases
+% \end{itemize}
+
+% \textbf{2. Large scales ($>$10--20~Mpc/h) for RSD measurement (linear regime):}
+% \begin{itemize}
+%     \item The actual multitracer RSD analysis happens on much larger scales (typically $>$10--20~Mpc/h)
+%     \item On these scales, linear theory applies even at low redshift ($z < 0.6$)
+%     \item This is where cosmic variance dominates and where multitracer provides the benefit
+%     \item The density-tagged populations are cross-correlated on these large scales to measure $f(z)$
+% \end{itemize}
+
+% \textbf{Why this works:} Even at low redshift (BGS: $z < 0.6$), linear theory remains valid on large enough scales. Non-linear effects are concentrated on small scales ($< \sim$8~Mpc/h). The two-step process is:
+% \begin{enumerate}
+%     \item \textbf{Tagging step} (non-linear, $\sim$1~Mpc): Count neighbors $\to$ classify as high/low density $\to$ creates bias-separated samples
+%     \item \textbf{Measurement step} (linear, $>>$1~Mpc): Cross-correlate the tagged populations on large scales $\to$ measure $f(z)$ with reduced cosmic variance
+% \end{enumerate}
+
+% The phrase ``enables RSD measurements across all scales'' means you can measure on multiple scales, but the main multitracer cosmic variance benefit is on large scales. The small-scale tagging just creates the populations; it does not mean RSD is measured in the non-linear regime.
+
+% \appendix
+% \section{Multitracer Statistics for RSD Measurements: Mathematical Foundation}
+
+% This appendix provides a detailed explanation of the multitracer technique for redshift-space distortion (RSD) measurements, based on McDonald \& Seljak (2009). The method allows one to measure the growth rate $f(z) = d \ln D / d \ln a$ with precision limited only by shot noise, not cosmic variance.
+
+% \subsection{The Fundamental Problem: Cosmic Variance in Single-Tracer RSD}
+
+% In the linear regime, the galaxy density perturbation in redshift space for tracer type $i$ is:
+% \begin{equation}
+% \delta_{g i} = (b_i + f \mu^2) \delta + \epsilon_i
+% \end{equation}
+% where $b_i$ is the galaxy bias, $f = d \ln D / d \ln a$ is the growth rate, $\mu = k_\parallel / k$ is the cosine of the angle to the line of sight, $\delta$ is the matter density perturbation, and $\epsilon_i$ is shot noise.
+
+% For a single tracer, the traditional method measures $\beta = f/b$ by comparing clustering along ($\mu = 1$) vs.\ perpendicular ($\mu = 0$) to the line of sight. However, this approach is fundamentally limited by cosmic variance: each Fourier mode is a random realization, and we cannot separate the uncertainty in the underlying matter field $\delta$ from the growth rate signal. This is why the error on $\beta$ is typically $\sim 12\%$ even with $\sim 1\%$ error on the power spectrum amplitude (McDonald \& Seljak 2009).
+
+% \subsection{The Multitracer Solution: Eliminating Cosmic Variance}
+
+% Consider two tracers with biases $b_1 = b$ and $b_2 = \alpha b$. Rewriting in terms of $\beta = f/b$:
+% \begin{equation}
+% \delta_{g 1} = f (\beta^{-1} + \mu^2) \delta + \epsilon_1
+% \end{equation}
+% \begin{equation}
+% \delta_{g 2} = f (\alpha \beta^{-1} + \mu^2) \delta + \epsilon_2
+% \end{equation}
+
+% \textbf{The key insight:} In the noise-free limit ($\epsilon_i = 0$), we can take the ratio:
+% \begin{equation}
+% \frac{\delta_{g 2}}{\delta_{g 1}} = \frac{\alpha \beta^{-1} + \mu^2}{\beta^{-1} + \mu^2}
+% \end{equation}
+% Notice that the dependence on the underlying matter field $\delta$ cancels out! The ratio depends only on $\alpha$ (bias ratio), $\beta$ (RSD parameter), and $\mu$ (angle to line of sight). Since the angular dependence $\mu$ is known from the geometry, we can extract $\alpha$ and $\beta$ independently.
+
+% This means we can determine $\beta$ exactly in the noise-free limit, with no cosmic variance. In reality, with finite noise, the precision is controlled by shot noise (number density), not cosmic variance.
+
+% \subsection{Mathematical Formalism: Fisher Matrix Analysis}
+
+% The full analysis uses a Fisher matrix approach on the covariance matrix of the two tracers. For modes with different angles $\mu$ to the line of sight, one can break degeneracies and constrain three parameters:
+% \begin{itemize}
+%     \item $f^2 P_m$: the velocity divergence power spectrum amplitude
+%     \item $\beta = f/b$: the RSD parameter  
+%     \item $\alpha = b_2/b_1$: the bias ratio
+% \end{itemize}
+
+% In the low noise limit, the key results are:
+% \begin{itemize}
+%     \item For a \textbf{single tracer}, the error on $\beta$ saturates: $\sigma_\beta^2 / \beta^2 = (1+\beta)^2 / \beta^2$ (cosmic variance limited)
+%     \item For \textbf{two tracers}, the error on $\beta$ can be arbitrarily small: $\sigma_\beta^2 / \beta^2 \propto X_{ij}$ where $X_{ij} = N_{ij} / (b_i b_j P_m)$ is the noise-to-signal ratio
+%     \item The improvement factor for $\beta$ scales as: $\sigma_\beta^2(\text{2 tracers}) / \sigma_\beta^2(\text{1 tracer}) \simeq 2 N_{22} / [(b_2 - b_1)^2 P_m]$
+%     \item For $f^2 P_m$, the improvement is: $\sigma_{f^2P_m}^2(\text{2 tracers}) / \sigma_{f^2P_m}^2(\text{1 tracer}) \simeq \beta^2 / [2(\beta^2 + 2\beta + 2)]$
+% \end{itemize}
+
+% These formulae show that with two tracers, the precision is limited only by shot noise, which can be reduced by increasing number density.
+
+% \subsection{The Number Density Requirement: Why Dense Samples Are Essential}
+
+% The multitracer method requires \textbf{high number density} to achieve low shot noise. Specifically:
+
+% \begin{itemize}
+%     \item The method requires $\bar{n} P_g \gg 1$, where $\bar{n}$ is the number density and $P_g(k)$ is the galaxy power spectrum
+%     \item Most BAO surveys aim for $\bar{n} P_g \sim 1$ because they only need to measure the \textbf{shape} of the power spectrum (to find BAO features), not its amplitude
+%     \item For multitracer RSD, we need to measure both the shape \textit{and} amplitude precisely, requiring $\bar{n} P_g \gg 1$
+%     \item This is why BGS's high density ($>10$ million galaxies, $z < 0.6$) is crucial---it provides the $\bar{n} P_g \gg 1$ needed to realize multitracer benefits
+% \end{itemize}
+
+% \subsection{Improvement Factors and Survey Optimizations}
+
+% McDonald \& Seljak (2009) show that multitracer can achieve:
+% \begin{itemize}
+%     \item \textbf{2--5$\times$ improvement} in $f(z)$ measurements for realistic surveys
+%     \item Up to \textbf{$\sim 10\times$ improvement} (rms) for $\beta = 0.4$ in the low noise limit
+%     \item Up to \textbf{$\sim 138\times$ improvement} (rms) for $f^2 P_m$ with $\beta = 1/3$ when integrating over all angles
+%     \item Precision equivalent to volumes \textbf{4--25$\times$ larger} than single-tracer measurements
+% \end{itemize}
+
+% The paper also demonstrates that for denser samples (like the SDSS main galaxy sample with $\bar{n} \sim 0.0044$ $(h^{-1}$ Mpc)$^{-3}$), the multitracer approach is quite effective, even with modest bias ratios ($\alpha \sim 1.4$ for red vs.\ blue galaxies).
+
+% \subsection{Connection to BGS Density Splits}
+
+% The BGS density split approach directly implements the multitracer method:
+% \begin{itemize}
+%     \item Density tagging creates two populations (high-density vs.\ low-density) with different biases
+%     \item These populations serve as the two tracers with biases $b_1$ and $b_2 = \alpha b_1$
+%     \item The bias difference $\alpha - 1$ is larger than simple color splits, improving the multitracer gain
+%     \item BGS's high number density ensures $\bar{n} P_g \gg 1$ in each subsample, enabling low shot noise
+%     \item Cross-correlating these populations on large scales measures $f(z)$ with reduced cosmic variance
+% \end{itemize}
+
+% \subsection{Why This Matters for Dark Energy and Modified Gravity}
+
+% McDonald \& Seljak (2009) show that multitracer RSD can achieve:
+% \begin{itemize}
+%     \item Constraints on dark energy parameters competitive with or better than weak lensing
+%     \item Sub-percent measurements of growth rate $f(z)$
+%     \item Up to two orders of magnitude improvement in Dark Energy Task Force Figure of Merit
+%     \item Tests of modified gravity through precise $f(z)$ measurements
+%     \item Direct measurements of $f^2 P_m$ (velocity divergence power spectrum) as precisely as if velocity divergence were observed directly
+% \end{itemize}
+
+% The method is particularly powerful because it circumvents the cosmic variance limit that plagues single-tracer measurements, allowing one to extract maximum information from galaxy redshift surveys.
+
+\begin{thebibliography}{}
+\bibitem[McDonald \& Seljak(2009)]{mcdonald2009}
+McDonald, P., \& Seljak, U. 2009, Journal of Cosmology and Astroparticle Physics, 10, 007
+
+\bibitem[{Hahn et al.}(2023)]{bgs_target_selection}
+Hahn, C., Wilson, M.~J., Ruiz-Macias, O., et al.\ 2023, AJ, 165, 253
+\end{thebibliography}
 
 \end{document}
 
